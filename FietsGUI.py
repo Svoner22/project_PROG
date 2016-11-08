@@ -5,10 +5,11 @@ import csv
 import random
 import threading
 import datetime
+import time
 
 """
 Nog in te leveren/schrijven functies:
-ophalen()
+loginfuncties: wachtwoord minimaal 5 chars!
 informatie()
 antirobotbeveiliging
 telegrambeveiliging
@@ -54,12 +55,25 @@ def invalidinput(index):
             item.delete(0, END)
     invalidlabel.grid(row = 10, columnspan = 2)
 
+def maketime():
+    global kaas
+    kaas = True
+    while kaas:
+        currenttime = str(datetime.datetime.now())
+        labeltext = currenttime[0:16]
+        label = Label(text = labeltext)
+        label.grid(row = 0, column = 10)
+        time.sleep(60)
+        label.grid_forget()
+
 def main():
     global root
     root = Tk()
     root.configure(background = 'yellow')
     root.geometry("1920x1020")
     initiate()
+    timethread = threading.Thread(target=maketime)
+    timethread.start()
     root.mainloop()
 
 def initiate():
@@ -191,8 +205,6 @@ def stallen_verify():
         fietsnummer = fietsnummerentry.get()
         wachtwoord = wachtwoordentry.get()
         kaas = False
-
-
         with open("register.csv", "r") as myCSVfile:
             for row in myCSVfile:
                 if fietsnummer and wachtwoord in row:
@@ -225,7 +237,7 @@ def informatie_verify():
     kaas = False
     with open("register.csv", "r") as myCSVfile:
         for line in myCSVfile:
-            if fietsnummer and wachtwoord  in line:
+            if fietsnummer and wachtwoord in line:
                 kaas = True
     if kaas:
         informatie()
