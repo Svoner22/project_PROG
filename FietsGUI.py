@@ -4,16 +4,10 @@ from tkinter import Tk, Label, Button, Entry, END, Text, Scrollbar
 import csv
 import random
 import threading
+import datetime
 
 """
-noot voor groep:
-als userinput niet aan condities voldoet:
-roep deze functie aan:
-
-invalidinput(1)
-
 Nog in te leveren/schrijven functies:
-stallen()
 ophalen()
 informatie()
 antirobotbeveiliging
@@ -21,7 +15,7 @@ telegrambeveiliging
 tijddisplay
 snelle functieoutputdisplay
 """
-#help
+
 def bluebutton(buttontext, function):
     button = Button(text = buttontext,
                     height = 2,
@@ -189,17 +183,28 @@ def informatie_login():
     loginbutton.grid(row = 4, column = 0)
 
 def stallen_verify():
-    fietsnummer = fietsnummerentry.get()
-    wachtwoord = wachtwoordentry.get()
-    kaas = False
+    csvlist = []
     with open("register.csv", "r") as myCSVfile:
         for row in myCSVfile:
-            if fietsnummer and wachtwoord in row:
-                kaas = True
-    if kaas:
-        stallen()
+            csvlist.append(row)
+    if len(csvlist) < 500:
+        fietsnummer = fietsnummerentry.get()
+        wachtwoord = wachtwoordentry.get()
+        kaas = False
+
+
+        with open("register.csv", "r") as myCSVfile:
+            for row in myCSVfile:
+                if fietsnummer and wachtwoord in row:
+                    kaas = True
+        if kaas:
+            stallen()
+        else:
+            invalidinput(1)
     else:
-        invalidinput(1)
+        vollestallinglabel = yellowlabel('Sorry, alle stallingen zijn vol')
+        que[1] = [vollestallinglabel]
+        vollestallinglabel.grid(row = 1, columnspan = 2)
 
 def ophalen_verify():
     fietsnummer = fietsnummerentry.get()
@@ -229,11 +234,43 @@ def informatie_verify():
 
 def stallen():
     forget(1)
-    print('stallen')
+    with open("stallen.csv", "a", newline="") as doc:
+        writer = csv.writer(doc, delimiter = ",")
+        time = datetime.datetime.now()
+        writer.writerow((fietsnummer, wachtwoord, time))
 
 def ophalen():
     forget(1)
-    print('ophalen')
+    eigenaarlst = []
+    nummerlst = []
+    time = []
+    with open("./stallen.csv", "r") as doc:
+        reader = csv.DictReader(doc)
+        for row in reader:
+            eigenaarlst.append(row["naam"])
+            nummerlst.append(row["nummer van de fiets"])
+            time.append(row["time"])
+    while True:
+        eigenaar = input("Naam: ")
+        if eigenaar in eigenaarlst:
+            break
+        print("Naam onbekend")
+    while True:
+        num_fiets = input("Nummer van de fiets: ")
+        if num_fiets == nummerlst[eigenaarlst.index(eigenaar)]:
+            break
+        print("error")
+    eigenaarlst.remove(eigenaar)
+    nummerlst.remove(num_fiets)
+    with open("./stallen.csv", "w", newline="") as doc:
+        writer = csv.writer(doc, delimiter = ",")
+        writer.writerow(("naam", "nummer van de fiets", "time"))
+        for i in eigenaarlst:
+            timew = time[eigenaarlst.index(i)]
+            naam = i
+            nummer = nummerlst[eigenaarlst.index(i)]
+            writer.writerow((naam, nummer, timew))
+    print("ok")
 
 def informatie():
     forget(1)
