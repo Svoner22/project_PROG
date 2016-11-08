@@ -1,6 +1,6 @@
 #Fietsenstalling
 
-from tkinter import Tk, Label, Button, Entry, END, Text, Scrollbar
+from tkinter import Tk, Label, Button, Entry, END, PhotoImage, Text, Scrollbar
 import csv
 import random
 import threading
@@ -61,9 +61,9 @@ def maketime():
     while kaas:
         currenttime = str(datetime.datetime.now())
         labeltext = currenttime[0:16]
-        label = Label(text = labeltext)
+        label = yellowlabel(labeltext)
         label.grid(row = 0, column = 10)
-        time.sleep(60)
+        time.sleep(10)
         label.grid_forget()
 
 def main():
@@ -87,7 +87,7 @@ def initiate():
     menukeuze = ''
     que =[[],[],[],[],[]]
     forget(0)
-    titlelabel = yellowlabel('NS fietsenstalling')
+    titlelabel = yellowlabel('NS fietsenstalling      ')
     registerbutton = bluebutton('Registreer', register)
     stallenbutton = bluebutton('Stal fiets', stallen_login)
     ophalenbutton = bluebutton('Haal fiets op', ophalen_login)
@@ -124,7 +124,7 @@ def register_verify():
                 for row in myCSVfile:
                     if telefoonnummer in row or len(telefoonnummer) != 10:
                         kaas = False
-        if kaas:
+        if kaas == True:
             forget(1)
             fietsnummer = str(random.randrange(10000,100000))
             with open("register.csv", "r") as myCSVfile:
@@ -197,8 +197,10 @@ def informatie_login():
     loginbutton.grid(row = 4, column = 0)
 
 def stallen_verify():
+    global fietsnummer
+    global wachtwoord
     csvlist = []
-    with open("register.csv", "r") as myCSVfile:
+    with open("stallen.csv", "r") as myCSVfile:
         for row in myCSVfile:
             csvlist.append(row)
     if len(csvlist) < 500:
@@ -207,9 +209,9 @@ def stallen_verify():
         kaas = False
         with open("register.csv", "r") as myCSVfile:
             for row in myCSVfile:
-                if fietsnummer and wachtwoord in row:
+                if fietsnummer and wachtwoord in row and len(fietsnummer) == 5 and len(wachtwoord) == 5 :
                     kaas = True
-        if kaas:
+        if kaas == True:
             stallen()
         else:
             invalidinput(1)
@@ -219,27 +221,31 @@ def stallen_verify():
         vollestallinglabel.grid(row = 1, columnspan = 2)
 
 def ophalen_verify():
+    global fietsnummer
+    global wachtwoord
     fietsnummer = fietsnummerentry.get()
     wachtwoord = wachtwoordentry.get()
     kaas = False
     with open("register.csv", "r") as myCSVfile:
         for line in myCSVfile:
-            if fietsnummer and wachtwoord in line:
+            if fietsnummer and wachtwoord in line and len(fietsnummer) == 5 and len(wachtwoord) == 5:
                 kaas = True
-    if kaas:
+    if kaas == True:
         ophalen()
     else:
         invalidinput(1)
 
 def informatie_verify():
+    global fietsnummer
+    global wachtwoord
     fietsnummer = fietsnummerentry.get()
     wachtwoord = wachtwoordentry.get()
     kaas = False
     with open("register.csv", "r") as myCSVfile:
         for line in myCSVfile:
-            if fietsnummer and wachtwoord in line:
+            if fietsnummer and wachtwoord in line and len(fietsnummer) == 5 and len(wachtwoord) == 5:
                 kaas = True
-    if kaas:
+    if kaas == True:
         informatie()
     else:
         invalidinput(1)
