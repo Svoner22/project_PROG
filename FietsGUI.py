@@ -21,7 +21,7 @@ telegrambeveiliging
 tijddisplay
 snelle functieoutputdisplay
 """
-
+#help
 def bluebutton(buttontext, function):
     button = Button(text = buttontext,
                     height = 2,
