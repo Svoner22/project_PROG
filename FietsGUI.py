@@ -252,15 +252,19 @@ def informatie_verify():
 
 def stallen():
     forget(1)
+    stallenlijst = []
+    with open("register.csv", "r") as myCSVfile:
+        for row in myCSVfile:
+            stallenlijst.append(row[3])
+    for item in range(500):
+        if item not in stallenlijst:
+            stalnummer = item
+            break
     with open("stallen.csv", "a", newline="") as doc:
         writer = csv.writer(doc, delimiter = ",")
         time = datetime.datetime.now()
-        writer.writerow((fietsnummer, wachtwoord, time))
-    csvlist = []
-    with open("register.csv", "r") as myCSVfile:
-        for row in myCSVfile:
-            csvlist.append(row)
-    stallenlabel = yellowlabel('Uw stalnummer is: '+str(len(csvlist)))
+        writer.writerow((fietsnummer, wachtwoord, time, stalnummer))
+    stallenlabel = yellowlabel('Uw stalnummer is: '+str(stalnummer))
     que[1]=[stallenlabel]
     stallenlabel.grid(row = 1, columnspan = 2)
 
