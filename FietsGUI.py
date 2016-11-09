@@ -256,6 +256,13 @@ def stallen():
         writer = csv.writer(doc, delimiter = ",")
         time = datetime.datetime.now()
         writer.writerow((fietsnummer, wachtwoord, time))
+    csvlist = []
+    with open("register.csv", "r") as myCSVfile:
+        for row in myCSVfile:
+            csvlist.append(row)
+    stallenlabel = yellowlabel('Uw stalnummer is: '+str(len(csvlist)))
+    que[1]=[stallenlabel]
+    stallenlabel.grid(row = 1, columnspan = 2)
 
 def ophalen():
     forget(1)
